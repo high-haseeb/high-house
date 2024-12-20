@@ -22,7 +22,14 @@ const HoverFlowMap = () => {
     const { gl } = useOGL()
     const flowmap = new Flowmap(gl, { falloff: 0.2, dissipation: 0.9 })
 
-    const isTouchCapable = 'ontouchstart' in window
+    const getIsTouchCapable = () => {
+        return (
+            'ontouchstart' in window || // Touch events
+            (navigator.maxTouchPoints > 0) || // Pointer events API
+            (navigator.msMaxTouchPoints > 0) // Older IE touch points
+        );
+    };
+    const isTouchCapable = getIsTouchCapable();
 
     const texture = new TextureLoader(gl, {
         minFilter: gl.LINEAR,
@@ -48,39 +55,48 @@ const HoverFlowMap = () => {
 
     const updateMouse = React.useCallback(
         (e) => {
-            e.preventDefault()
+            e.preventDefault();
 
-            if (e.x === undefined) {
-                e.x = e.pageX
-                e.y = e.pageY
+            let clientX, clientY;
+
+            if ('touches' in e && e.touches.length > 0) {
+                // Handle touch event
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                // Handle mouse event
+                clientX = e.clientX || e.pageX;
+                clientY = e.clientY || e.pageY;
             }
 
             // Get mouse value in 0 to 1 range, with y flipped
-            mouse.set(e.x / gl.renderer.width, 1.0 - e.y / gl.renderer.height)
+            mouse.set(clientX / gl.renderer.width, 1.0 - clientY / gl.renderer.height);
+
             // Calculate velocity
             if (!lastTimeRef.current) {
                 // First frame
-                lastTimeRef.current = window.performance.now()
-                lastMouse.set(e.x, e.y)
+                lastTimeRef.current = window.performance.now();
+                lastMouse.set(clientX, clientY);
             }
 
-            const deltaX = e.x - lastMouse.x
-            const deltaY = e.y - lastMouse.y
+            const deltaX = clientX - lastMouse.x;
+            const deltaY = clientY - lastMouse.y;
 
-            lastMouse.set(e.x, e.y)
+            lastMouse.set(clientX, clientY);
 
-            let time = window.performance.now()
+            const time = window.performance.now();
 
             // Avoid dividing by 0
-            let delta = Math.max(10.4, time - lastTimeRef.current)
-            lastTimeRef.current = time
-            velocity.x = deltaX / delta
-            velocity.y = deltaY / delta
+            const delta = Math.max(10.4, time - lastTimeRef.current);
+            lastTimeRef.current = time;
+            velocity.x = deltaX / delta;
+            velocity.y = deltaY / delta;
+
             // Flag update to prevent hanging velocity values when not moving
-            velocity.needsUpdate = true
+            velocity.needsUpdate = true;
         },
         [gl.renderer.height, gl.renderer.width, lastMouse, mouse, velocity]
-    )
+    );
 
     useFrame((_, delta) => {
         if (!velocity.needsUpdate) {
