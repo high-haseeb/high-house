@@ -1,6 +1,6 @@
 import { Flowmap, Texture, Vec2, Vec4 } from 'ogl'
 import * as React from 'react'
-import { useFrame, useOGL } from 'react-ogl'
+import { useFrame, useOGL } from '@/components/lib/react-ogl'
 import { fragment, vertex } from '@/shadres/hoverFlowMap/index';
 
 class TextureLoader extends Texture {

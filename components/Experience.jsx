@@ -1,6 +1,6 @@
 "use client";
 import React from 'react'
-import { Canvas } from 'react-ogl';
+import { Canvas } from '@/components/lib/react-ogl';
 import HoverFlowMap from './HoverFlowMap';
 
 const Experience = () => {
