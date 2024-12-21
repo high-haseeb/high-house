@@ -1,33 +1,77 @@
 "use client";
-import { useTexture } from '@react-three/drei'
-import { Canvas, useThree } from '@react-three/fiber'
-import { EffectComposer } from '@react-three/postprocessing'
-import { Fluid } from '@whatisjery/react-fluid-distortion'
-import React from 'react'
-import { Plane } from '@react-three/drei'
-import Image from 'next/image'
+import { useTexture } from "@react-three/drei";
+import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import { EffectComposer } from "@react-three/postprocessing";
+import { Fluid } from "@whatisjery/react-fluid-distortion";
+import React, { useRef } from "react";
+import { Plane } from "@react-three/drei";
+import { lerp } from "three/src/math/MathUtils";
 
 const Experience = () => {
-
     return (
-        <Canvas className='h-full w-full'>
+        <Canvas className="h-full w-full">
             <Background />
             <EffectComposer>
                 <Fluid />
             </EffectComposer>
+            <ambientLight intensity={1.0} />
         </Canvas>
-    )
-}
+    );
+};
+
+const layers = [
+    { texture: "/commision/images/layer_1.png", z: 0 },
+    { texture: "/commision/images/layer_2.png", z: -0.5 },
+    { texture: "/commision/images/layer_3.png", z: -1 },
+    { texture: "/commision/images/background.jpg", z: -1.5 },
+];
+
 const Background = () => {
-    const texture = useTexture('/commision/images/background.jpg');
     const { viewport } = useThree();
-    const aspectRatio = viewport.width / viewport.height;
 
     return (
-        <Plane args={[viewport.width, viewport.height]} position={[0, 0, -1]}>
-            <meshBasicMaterial attach="material" map={texture} />
+        <>
+            {layers.map((layer, index) => (
+                <ParallaxLayer
+                    key={index}
+                    texture={layer.texture}
+                    z={layer.z}
+                    viewport={viewport}
+                />
+            ))}
+        </>
+    );
+};
+
+const ParallaxLayer = ({ texture: texturePath, z, viewport }) => {
+    const texture = useTexture(texturePath);
+    const planeRef = useRef();
+
+    useFrame(({ pointer }) => {
+        if (planeRef.current) {
+            const parallaxFactor = 1.2 - Math.abs(z) * 0.2;
+            planeRef.current.rotation.z = lerp(
+                planeRef.current.rotation.z,
+                pointer.x * 0.1 * parallaxFactor,
+                0.1
+            );
+            planeRef.current.position.z = lerp(
+                planeRef.current.position.z,
+                Math.abs(pointer.x) * 0.5 * parallaxFactor,
+                0.1
+            );
+        }
+    });
+
+    return (
+        <Plane
+            args={[viewport.width, viewport.height]}
+            position={[0, 0, z * 0.1]}
+            ref={planeRef}
+        >
+            <meshBasicMaterial attach="material" transparent map={texture} />
         </Plane>
     );
-}
+};
 
-export default Experience
+export default Experience;
