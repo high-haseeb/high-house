@@ -1,68 +1,65 @@
 /* Base Leaf Styles */
 .leaf {
     position: absolute;
-    /* width: 100px; */
-    /* height: 100px; */
-    /* transform-origin: center; */
-    animation: jungleMove 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+    animation-delay: 1s;
+}
+
+.leaf.animate {
+    animation: jungleMove 2s ease-out forwards;
 }
 
 /* Initial Positions and Rotations */
-.leaf-1 { top: 0; left: 10%; transform: rotate(135deg); animation-delay: 0s; }
-.leaf-2 { top: 0; left: 30%; transform: rotate(125deg); animation-delay: 0.1s; }
-.leaf-3 { top: 0; left: 50%; transform: rotate(115deg); animation-delay: 0.2s; }
-.leaf-4 { top: 0; left: 70%; transform: rotate(105deg); animation-delay: 0.3s; }
-.leaf-5 { top: 0; left: 90%; transform: rotate(95deg); animation-delay: 0.4s; }
+.leaf-1 { top: -25%; left: 13%; --rotate-start: 130deg; transform: rotate(0); animation-delay: 0s; }
+.leaf-2 { top: -25%; left: 7%; --rotate-start: 130deg; animation-delay: 0.1s; }
+.leaf-3 { top: 8%; left: -8%;  --rotate-start: 130deg; animation-delay: 0.1s; }
+.leaf-4 { top: 40%; left: -6%;   --rotate-start: 60deg; animation-delay: 0.1s; }
+.leaf-5 { top: 20%; left: 20%;  --rotate-start: 30deg; animation-delay: 0.1s; }
 
-.leaf-6 { top: 10%; left: 0; transform: rotate(45deg); animation-delay: 0.5s; }
-.leaf-7 { top: 30%; left: 0; transform: rotate(35deg); animation-delay: 0.6s; }
-.leaf-8 { top: 50%; left: 0; transform: rotate(25deg); animation-delay: 0.7s; }
-.leaf-9 { top: 70%; left: 0; transform: rotate(15deg); animation-delay: 0.8s; }
-.leaf-10 { top: 90%; left: 0; transform: rotate(5deg); animation-delay: 0.9s; }
+.leaf-6 { top: 0%; left: 10%;  --rotate-start: 40deg; animation-delay: 0.1s; }
+.leaf-7 { top: 40%; left: 32%; --rotate-start: 30deg; animation-delay: 0.1s; }
+.leaf-8 { top: 20%; left: 0%; --rotate-start: 40deg; animation-delay: 0.1s; }
+.leaf-9 { top: 30%; right: -2%; --rotate-start: -40deg; animation-delay: 0.1s; }
+.leaf-10 { top: -10%; left: 26%; --rotate-start: 140deg; animation-delay: 0.1s; }
 
-.leaf-11 { bottom: 0; left: 10%; transform: rotate(-135deg); animation-delay: 1s; }
-.leaf-12 { bottom: 0; left: 30%; transform: rotate(-125deg); animation-delay: 1.1s; }
-.leaf-13 { bottom: 0; left: 50%; transform: rotate(-115deg); animation-delay: 1.2s; }
-.leaf-14 { bottom: 0; left: 70%; transform: rotate(-105deg); animation-delay: 1.3s; }
-.leaf-15 { bottom: 0; left: 90%; transform: rotate(-95deg); animation-delay: 1.4s; }
+.leaf-11 { top: -28%; left: 50%; --rotate-start: 35deg; animation-delay: 0.1s; }
+.leaf-12 { bottom: 0; left: 88%; --rotate-start: 45deg;  animation-delay: 0.1s; }
+.leaf-13 { top: -25%; left: 40%; --rotate-start: -165deg; animation-delay: 0.1s; }
+.leaf-14 { top: -38%; left: 65%; --rotate-start: -135deg; animation-delay: 0.1s; }
+.leaf-15 { top: 60%; left: 60%; animation-delay: 0.1s; }
 
-.leaf-16 { top: 10%; right: 0; transform: rotate(-45deg); animation-delay: 1.5s; }
-.leaf-17 { top: 30%; right: 0; transform: rotate(-35deg); animation-delay: 1.6s; }
-.leaf-18 { top: 50%; right: 0; transform: rotate(-25deg); animation-delay: 1.7s; }
-.leaf-19 { top: 70%; right: 0; transform: rotate(-15deg); animation-delay: 1.8s; }
-.leaf-20 { top: 90%; right: 0; transform: rotate(-5deg); animation-delay: 1.9s; }
+.leaf-16 { top: 60%; left: 45%; animation-delay: 0.1s; }
+.leaf-17 { top: 40%; left: 50%; --rotate-start: -165deg; animation-delay: 0.1; }
+.leaf-18 { top: -60%; right: -10%; --rotate-start: 65deg; animation-delay: 0.1; }
+.leaf-19 { top: 35%; right: 0;--rotate-start: -50deg; animation-delay: 0.1s; }
+.leaf-20 { top: 30%; right: 10%;--rotate-start: -50deg;animation-delay: 0.1s; } 
 
-/* Keyframes for Jungle Animation */
+.leaf {
+    transform: rotate(var(--rotate-start));
+}
 @keyframes jungleMove {
     0% {
-        transform: translate(0, 0) rotate(var(--rotate-start));
-    }
-    100% {
-        transform: rotate(var(--rotate-start));
-    }
-}
+       transform: (var(0));
+   }
+   100% {
+       transform: rotate(var(--rotate-start));
+       transform: translate(calc(var(--direction-x) * 100%), calc(var(--direction-y) * 58%));
+       right: var(--translate-end-y);
+   }
+}    
 
-/* Direction Variables */
 .leaf-1, .leaf-2, .leaf-3, .leaf-4, .leaf-5 {
-    --direction-x: 0;
+    --direction-x: -2;
     --direction-y: -1;
-    --rotate-start: 135deg;
 }
-
-.leaf-6, .leaf-7, .leaf-8, .leaf-9, .leaf-10 {
-    --direction-x: -1;
-    --direction-y: 0;
-    --rotate-start: 45deg;
+.leaf-6 , .leaf-7, .leaf-8{
+    --direction-x: -2;    ;
+    --direction-y: 2; 
 }
-
-.leaf-11, .leaf-12, .leaf-13, .leaf-14, .leaf-15 {
-    --direction-x: 0;
-    --direction-y: 1;
-    --rotate-start: -135deg;
+.leaf-10,.leaf-11,.leaf-12,.leaf-13,.leaf-14,.leaf-9{
+    --direction-x: 2;
+    --direction-y: -5
 }
-
-.leaf-16, .leaf-17, .leaf-18, .leaf-19, .leaf-20 {
-    --direction-x: 1;
-    --direction-y: 0;
-    --rotate-start: -45deg;
+.leaf-15,.leaf-16,.leaf-17,.leaf-18,.leaf-19,.leaf-20{
+    --direction-x: 2;
+    --direction-y: 2;
 }

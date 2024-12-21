@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 
-function MenuButton() {
+function MenuButton({ open, ...props }) {
     const buttonRef = useRef();
     const containerRef = useRef();
     const [textCol, setCol] = useState('text-white');
@@ -58,14 +58,15 @@ function MenuButton() {
         };
     }, []);
 
+
     return (
-        <div className="w-[350px] h-56 absolute top-5 right-0 bg-[black] z-50" ref={containerRef}>
+        <div className="w-[350px] h-56 absolute top-5 right-0 z-50" ref={containerRef} {...props}>
             <div className="relative w-full h-full">
                 <button
                     ref={buttonRef}
                     className="relative h-24 w-24 rounded-full flex flex-col justify-center items-center border"
                 >
-                    <div className={`text-xl ${textCol}`}>MENU</div>
+                    <div className={`text-xl ${textCol}`}>{open ? "CLOSE" : "MENU"}</div>
                 </button>
             </div>
         </div>

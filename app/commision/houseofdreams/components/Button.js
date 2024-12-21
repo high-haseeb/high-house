@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import Image from "next/image";
 
-function Button() {
+function Button({ introDone, ...props }) {
     const buttonRef = useRef();
     const containerRef = useRef();
     const imageRef = useRef();
@@ -81,25 +81,25 @@ function Button() {
     const handleMouseEnter = () => {
         setColor("#FFFFFFD9");
         gsap.to(imageRef.current, { opacity: 1, duration: 0.5, ease: "power2.out" });
-        setTrans("translate-y-20 opacity-0"); 
-        setNewTrans("-translate-y-5 opacity-100"); 
+        setTrans("translate-y-20 opacity-0");
+        setNewTrans("-translate-y-5 opacity-100");
     };
 
     const handleMouseLeave = () => {
         setColor("#FFFFFF80");
         gsap.to(imageRef.current, { opacity: 0, duration: 0.5, ease: "power2.out" });
         setTrans("translate-y-5 opacity-100");
-        setNewTrans("translate-y-20 opacity-0"); 
+        setNewTrans("translate-y-20 opacity-0");
     };
 
     return (
         <div
-            className="w-[600px] h-52 absolute bottom-20 left-72"
+            {...props}
             ref={containerRef}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <div className="relative w-full h-full bg-black">
+            <div className={`relative w-full h-full ${introDone ? "opacity-0" : "opacity-1"} transition-opacity`}>
                 <Image
                     ref={imageRef}
                     height={600}

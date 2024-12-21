@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
-function TextAnimation({ text }) {
+function TextAnimation({ text, ...props }) {
     const textRef = useRef();
     const [isInView, setIsInView] = useState(false);
 
@@ -42,7 +42,7 @@ function TextAnimation({ text }) {
     }, [isInView]);
 
     return (
-        <div className="overflow-hidden inline-block z-20">
+        <div className="overflow-hidden inline-block z-20" {...props}>
             <span
                 ref={textRef}
                 className="block text-8xl font-bold text-white"

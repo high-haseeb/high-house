@@ -7,10 +7,10 @@ import React, { useRef } from "react";
 import { Plane } from "@react-three/drei";
 import { lerp } from "three/src/math/MathUtils";
 
-const Experience = () => {
+const Experience = ({ introDone }) => {
     return (
-        <Canvas className="h-full w-full">
-            <Background />
+        <Canvas className="h-full w-full z-10">
+            <Background introDone={introDone} />
             <EffectComposer>
                 <Fluid />
             </EffectComposer>
@@ -26,13 +26,13 @@ const layers = [
     { texture: "/commision/images/background.jpg", z: -1.5 },
 ];
 
-const Background = () => {
+const Background = ({ introDone }) => {
     const { viewport } = useThree();
-
     return (
         <>
             {layers.map((layer, index) => (
                 <ParallaxLayer
+                    introDone={introDone}
                     key={index}
                     texture={layer.texture}
                     z={layer.z}
@@ -43,23 +43,20 @@ const Background = () => {
     );
 };
 
-const ParallaxLayer = ({ texture: texturePath, z, viewport }) => {
+const ParallaxLayer = ({ introDone, texture: texturePath, z, viewport }) => {
     const texture = useTexture(texturePath);
     const planeRef = useRef();
 
     useFrame(({ pointer }) => {
-        if (planeRef.current) {
+
+        if (planeRef.current && introDone) {
             const parallaxFactor = 1.2 - Math.abs(z) * 0.2;
-            planeRef.current.rotation.z = lerp(
-                planeRef.current.rotation.z,
-                pointer.x * 0.1 * parallaxFactor,
-                0.1
-            );
-            planeRef.current.position.z = lerp(
-                planeRef.current.position.z,
-                Math.abs(pointer.x) * 0.5 * parallaxFactor,
-                0.1
-            );
+            planeRef.current.rotation.z = lerp(planeRef.current.rotation.z, pointer.x * 0.1 * parallaxFactor, 0.1);
+            planeRef.current.position.z = lerp(planeRef.current.position.z, Math.abs(pointer.x) * 0.5 * parallaxFactor, 0.1);
+        }
+
+        if (!introDone) {
+            planeRef.current.position.z = lerp(planeRef.current.position.z, -1.0, 0.1);
         }
     });
 
