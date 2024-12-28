@@ -54,13 +54,14 @@ const Menu = () => {
                 <ColorOptions />
 
                 <div className="text-3xl font-bold">Strap</div>
-                <div className="flex flex-col">
+                <div className="grid grid-cols-2 w-full">
                     {
-                        straps.map((strap, index) => {
-                            <div className="flex flex-col bg-red-200 h-10 w-20" key={index}>
-                                <Image src={`/models/images/${strap.src}`} alt={strap.name} width={200} height={100} className="object-cover w-full h-20 bg-red-200"/>
+                        straps.map((strap, index) => (
+                            <div className="flex flex-col w-full p-4" key={index}>
+                                <Image src={`/models/images/${strap.src}`} alt={strap.name} width={200} height={100} className="object-cover w-full h-auto"/>
+                                <div>{strap.name}</div>
                             </div>
-                        })
+                        ))
                     }
                 </div>
 
