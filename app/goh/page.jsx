@@ -1,6 +1,6 @@
 "use client";
 import { applyProps, Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, OrbitControls, OrthographicCamera, useGLTF, useProgress, Html, Center } from '@react-three/drei';
+import { Environment, OrbitControls, OrthographicCamera, useGLTF, useProgress, Html, Center, useTexture } from '@react-three/drei';
 import { useRef, useEffect, Suspense } from "react";
 import useStateStore from "./stateStore";
 import Image from "next/image";
@@ -179,11 +179,14 @@ function Sandals(props) {
     const { nodes, materials } = useGLTF('/models/sandals.glb')
     const { activeColor } = useStateStore();
     applyProps(materials['Procedural Rubber'], { color: activeColor })
+    const tex = useTexture('models/images/2.png');
     return (
         <group {...props} dispose={null} >
-            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)'].geometry} material={materials['Procedural Rubber']} />
-            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_2'].geometry} material={materials.재질_1} />
-            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_3'].geometry} material={materials.재질_1} />
+      <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)'].geometry} material={materials['Procedural Rubber']} />
+      <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_2'].geometry} material={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_2'].material} />
+      <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_3'].geometry} >
+                <meshStandardMaterial map={tex} />
+            </mesh>
         </group>
     )
 }
