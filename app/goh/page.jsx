@@ -1,11 +1,11 @@
 "use client";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, OrbitControls, OrthographicCamera, PresentationControls, Stage, useGLTF } from '@react-three/drei'
-import { useRef, useEffect } from "react";
+import { Environment, OrbitControls, OrthographicCamera, PresentationControls, Stage, useGLTF, useProgress, Html } from '@react-three/drei'
+import { useRef, useEffect, Suspense } from "react";
 
 const Page = () => {
     return (
-        <main className='w-screen h-screen bg-[#EFEFEF] text-[#181818] font-bold p-4'>
+        <main className='w-screen h-screen bg-[#EFEFEF] text-[#181818] font-bold'>
             <Experience />
             <Overlay />
         </main>
@@ -31,17 +31,30 @@ const Overlay = () => {
     )
 }
 
+const Loader = () => {
+    const { progress } = useProgress();
+    return (
+        <Html center className="w-screen h-screen z-[999] bg-yellow-300 absolute top-0 left-0 flex items-center justify-center text-3xl">
+            {progress.toFixed(0)}%
+        </Html>
+    )
+}
+
 const Experience = () => {
     return (
-        <Canvas className="w-full h-full absolute top-0 left-0">
-            <ambientLight />
-            <OrthographicCamera makeDefault near={0.01} far={100} position={[0, 0, 5]} left={-2} right={2} top={2} bottom={-2} zoom={3} />
-            <DynamicOrthographicCamera />
-            <PresentationControls>
-                <Sandal />
-            </PresentationControls>
-            <Environment preset="city" />
-        </Canvas >
+        <>
+            <Canvas className="w-full h-full absolute top-0 left-0">
+                <Suspense fallback={<Loader/>}>
+                    <ambientLight />
+                    <OrthographicCamera makeDefault near={0.01} far={100} position={[0, 0, 5]} left={-2} right={2} top={2} bottom={-2} zoom={3} />
+                    <DynamicOrthographicCamera />
+                    <PresentationControls>
+                        <Sandal />
+                    </PresentationControls>
+                    <Environment preset="city" />
+                </Suspense>
+            </Canvas >
+        </>
     )
 }
 
@@ -69,7 +82,7 @@ export function Sandal(props) {
         ref.current.rotation.y += delta;
     })
     return (
-        <group {...props} ref={ref} dispose={null} scale={5.0}>
+        <group {...props} ref={ref} dispose={null} scale={5.0} rotation={[Math.PI / 4, 0, 0]}>
             <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)'].geometry} material={materials.재질_1} position={[0.017, -0.019, -0.005]} />
             <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_2'].geometry} material={materials.재질_1} position={[-0.032, 0.001, 0.007]} />
             <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_3'].geometry} material={materials.재질_1} position={[0.015, 0.018, -0.002]} />
