@@ -1,20 +1,154 @@
-'use client';
+"use client";
 import Overlay from '@/components/Overlay'
 import React, { useEffect, useRef } from 'react'
-import { useControls } from 'leva';
+import { folder, useControls } from 'leva';
 
 const PixelAdd = () => {
-    const { title } = useControls({title: "hello"});
+    const {
+        title,
+        description,
+        buttonText,
+        logoImage,
+        bgImage,
+        titleFont,
+        titleColor,
+        titleHorizontal,
+        titleVertical,
+        titleBgColor,
+        titlePadding,
+        titleBorderRadius,
+        descFont,
+        descColor,
+        descHorizontal,
+        descVertical,
+        descBgColor,
+        descPadding,
+        descBorderRadius,
+        buttonFont,
+        buttonColor,
+        buttonHorizontal,
+        buttonVertical,
+        buttonBgColor,
+        buttonPadding,
+        buttonBorderRadius,
+        logoWidth,
+        logoHeight,
+        logoHorizontal,
+        logoVertical,
+        bgOpacity,
+        bgScale,
+    } = useControls('Main Properties', {
+        General: folder({
+            title: 'Toyota',
+            description: "Let's go places",
+            buttonText: 'Buy now',
+            logoImage: 'images/toyota-logo.jpg',
+            bgImage: 'images/2d.jpg',
+        }),
+        Title: folder({
+            titleFont: '30px Arial',
+            titleColor: 'black',
+            titleHorizontal: { value: 'center', options: ['left', 'center', 'right'] },
+            titleVertical: { value: 'middle', options: ['top', 'middle', 'bottom'] },
+            titleBgColor: 'rgba(255, 255, 255, 0.5)',
+            titlePadding: 10,
+            titleBorderRadius: 5,
+        }),
+        Description: folder({
+            descFont: '20px Arial',
+            descColor: 'black',
+            descHorizontal: { value: 'center', options: ['left', 'center', 'right'] },
+            descVertical: { value: 'middle', options: ['top', 'middle', 'bottom'] },
+            descBgColor: 'rgba(255, 255, 255, 0.5)',
+            descPadding: 10,
+            descBorderRadius: 5,
+        }),
+        Button: folder({
+            buttonFont: '25px Arial',
+            buttonColor: 'blue',
+            buttonHorizontal: { value: 'center', options: ['left', 'center', 'right'] },
+            buttonVertical: { value: 'bottom', options: ['top', 'middle', 'bottom'] },
+            buttonBgColor: 'rgba(0, 0, 255, 0.5)',
+            buttonPadding: 10,
+            buttonBorderRadius: 5,
+        }),
+        Logo: folder({
+            logoWidth: 100,
+            logoHeight: 100,
+            logoHorizontal: { value: 'center', options: ['left', 'center', 'right'] },
+            logoVertical: { value: 'top', options: ['top', 'middle', 'bottom'] },
+        }),
+        Background: folder({
+            bgOpacity: 0.5,
+            bgScale: 0.5,
+        }),
+    });
+
+    const template = {
+        title: {
+            font: titleFont,
+            color: titleColor,
+            horizontal: titleHorizontal,
+            vertical: titleVertical,
+            background: {
+                color: titleBgColor,
+                padding: titlePadding,
+                borderRadius: titleBorderRadius,
+            },
+        },
+        description: {
+            font: descFont,
+            color: descColor,
+            horizontal: descHorizontal,
+            vertical: descVertical,
+            background: {
+                color: descBgColor,
+                padding: descPadding,
+                borderRadius: descBorderRadius,
+            },
+        },
+        button: {
+            font: buttonFont,
+            color: buttonColor,
+            horizontal: buttonHorizontal,
+            vertical: buttonVertical,
+            background: {
+                color: buttonBgColor,
+                padding: buttonPadding,
+                borderRadius: buttonBorderRadius,
+            },
+        },
+        logo: {
+            size: {
+                width: logoWidth,
+                height: logoHeight,
+            },
+            horizontal: logoHorizontal,
+            vertical: logoVertical,
+        },
+        bgOpacity,
+        bgScale,
+    };
+
     return (
-        <div className="w-2/3">
-            {/* <Canvas */}
-            {/*     title="Toyota" */}
-            {/*     description="Let's go places" */}
-            {/*     buttonText="Buy now" */}
-            {/*     logoImage={'images/toyota-logo.jpg'} */}
-            {/*     bgImage={'images/2d.jpg'} */}
-            {/* /> */}
-            <Overlay />
+        <div className="w-screen h-screen bg-[#181818] flex items-center justify-center">
+            <div className='absolute top-10 left-10 flex flex-col text-[#efefef]'>
+                <span className='text-4xl'> Pixel Add</span>
+                <span className='text-lg'>Canvas Template</span>
+            </div>
+            <div className='w-1/2 h-1/2 rounded-xl'>
+                <Canvas
+                    title={title}
+                    description={description}
+                    buttonText={buttonText}
+                    logoImage={logoImage}
+                    bgImage={bgImage}
+                    template={template}
+                />
+            </div>
+            <div className="absolute bottom-10 left-10 text-sm z-50 text-white">
+                made by high-house
+            </div>
         </div>
     );
 };
@@ -85,7 +219,7 @@ const Canvas = ({ logoImage, title, description, bgImage, buttonText, template }
 
     }, [logoImage, title, description, bgImage, buttonText, template]);
 
-    return <canvas ref={canvasRef} className="w-full h-full bg-white" />;
+    return <canvas ref={canvasRef} className="w-full h-full bg-white rounded-xl" />;
 };
 
 export default PixelAdd;
