@@ -21,6 +21,13 @@ const useStateStore = create((set) => ({
             { name: "brown", value: "#663300", },
         ],
     },
+    straps: [
+        { name: "Wave_anchor", src: "1.png" },
+        { name: "Wave", src: "2.png" },
+        { name: "Ming", src: "3.png" },
+        { name: "Camp", src: "4.png" },
+        { name: "Tears", src: "tears.png" },
+    ],
     activeColor: "#F7F3ED",
     setActiveColor: (color) => set({ activeColor: color }),
     activeModel: "sandals",

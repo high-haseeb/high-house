@@ -1,13 +1,13 @@
 "use client";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, OrbitControls, OrthographicCamera, PresentationControls, Stage, useGLTF, useProgress, Html } from '@react-three/drei'
+import { applyProps, Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Environment, OrbitControls, OrthographicCamera, useGLTF, useProgress, Html, Center } from '@react-three/drei';
 import { useRef, useEffect, Suspense } from "react";
 import useStateStore from "./stateStore";
 import Image from "next/image";
 
 const Page = () => {
     return (
-        <main className='w-screen h-screen bg-[#EFEFEF] text-[#181818] font-bold relative overflow-hidden'>
+        <main className='w-screen h-screen bg-[#EFEFEF] text-black font-bold relative overflow-hidden'>
             <Menu />
             <Experience />
             <Overlay />
@@ -15,12 +15,12 @@ const Page = () => {
     )
 }
 const Menu = () => {
-    const { menuOpen, setMenuOpen, activeModel, setActiveModel, colors, setActiveColor, activeColor } = useStateStore();
+    const { menuOpen, setMenuOpen, activeModel, setActiveModel, colors, setActiveColor, activeColor, straps } = useStateStore();
     const Option = ({ title, imgUrl }) => {
         let isOn = activeModel === title;
         return (
-            <button className="flex flex-col gap-0" onClick={() => setActiveModel(title)}>
-                <Image src={imgUrl} width={100} height={100} alt="sandals" />
+            <button className="flex flex-col gap-2" onClick={() => setActiveModel(title)}>
+                <Image src={imgUrl} width={100} height={100} alt={title} className="border border-black" />
                 <div className="flex gap-1 items-center justify-center">
                     <div className={`${isOn ? "bg-black " : "bg-transparent"} border border-black h-3 w-3 rounded-full`} />
                     <span className="capitalize">{title}</span>
@@ -45,12 +45,24 @@ const Menu = () => {
     return (
         <div className={`absolute h-screen w-screen top-0 left-0 bg-white z-50 ${menuOpen == "edit" ? "translate-y-0" : "translate-y-full"} transition-transform p-6`}>
             <div className="relative w-full h-full flex flex-col gap-4">
+                <div className="text-3xl font-bold">Shoes</div>
                 <div className="flex items-center justify-between">
                     <Option title="sandals" imgUrl={"/images/shoetype_sandal.png"} />
                     <Option title="slippers" imgUrl={"/images/shoetype_strapslipper.png"} />
                     <Option title="clogs" imgUrl={"/images/shoetype_muleclog.png"} />
                 </div>
                 <ColorOptions />
+
+                <div className="text-3xl font-bold">Strap</div>
+                <div className="flex flex-col">
+                    {
+                        straps.map((strap, index) => {
+                            <div className="flex flex-col bg-red-200 h-10 w-20" key={index}>
+                                <Image src={`/models/images/${strap.src}`} alt={strap.name} width={200} height={100} className="object-cover w-full h-20 bg-red-200"/>
+                            </div>
+                        })
+                    }
+                </div>
 
                 <div className="flex w-full items-center justify-around absolute bottom-4">
                     <button className="bg-[#181818] text-white px-6 py-3 w-1/3 capitalize rounded-xl" onClick={() => setMenuOpen(false)}>cancel</button>
@@ -74,7 +86,7 @@ const Overlay = () => {
                 <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M2.42012 12.7132C2.28394 12.4975 2.21584 12.3897 2.17772 12.2234C2.14909 12.0985 2.14909 11.9015 2.17772 11.7766C2.21584 11.6103 2.28394 11.5025 2.42012 11.2868C3.54553 9.50484 6.8954 5 12.0004 5C17.1054 5 20.4553 9.50484 21.5807 11.2868C21.7169 11.5025 21.785 11.6103 21.8231 11.7766C21.8517 11.9015 21.8517 12.0985 21.8231 12.2234C21.785 12.3897 21.7169 12.4975 21.5807 12.7132C20.4553 14.4952 17.1054 19 12.0004 19C6.8954 19 3.54553 14.4952 2.42012 12.7132Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /> <path d="M12.0004 15C13.6573 15 15.0004 13.6569 15.0004 12C15.0004 10.3431 13.6573 9 12.0004 9C10.3435 9 9.0004 10.3431 9.0004 12C9.0004 13.6569 10.3435 15 12.0004 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /> </svg>
             </button>
-            <button className="w-16 h-16 rounded-full border border-black p-3" onClick={() => console.log("download image")}>
+            <button className="w-16 h-16 rounded-full border border-black p-3" onClick={() => console.log("download image")} id="screenshot">
                 <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21 15V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V15M17 10L12 15M12 15L7 10M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -100,14 +112,34 @@ const Experience = () => {
                     <ambientLight />
                     <OrthographicCamera makeDefault near={0.01} far={100} position={[0, 0, 5]} left={-2} right={2} top={2} bottom={-2} zoom={3} />
                     <DynamicOrthographicCamera />
-                    <PresentationControls>
+                    <OrbitControls/>
+                    <Center>
                         <Model />
-                    </PresentationControls>
+                    </Center>
+
                     <Environment preset="city" />
                 </Suspense>
+                <ScreenShot />
             </Canvas >
         </>
     )
+}
+
+const ScreenShot = () => {
+    const { gl, scene, camera } = useThree();
+    const takeScreenshot = () => {
+        gl.render(scene, camera);
+        const dataURL = gl.domElement.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'screenshot.png';
+        link.click();
+    };
+    useEffect(() => {
+        const button = document.getElementById("screenshot");
+        button.onclick = takeScreenshot;
+    }, []);
+    return null;
 }
 
 const DynamicOrthographicCamera = () => {
@@ -144,40 +176,38 @@ const Model = () => {
 
 function Sandals(props) {
     const { nodes, materials } = useGLTF('/models/sandals.glb')
+    const { activeColor } = useStateStore();
+    applyProps(materials['Procedural Rubber'], { color: activeColor })
     return (
         <group {...props} dispose={null} >
-            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)'].geometry} material={materials.재질_1} position={[0.017, -0.019, -0.005]} />
-            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_2'].geometry} material={materials.재질_1} position={[-0.032, 0.001, 0.007]} />
-            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_3'].geometry} material={materials.재질_1} position={[0.015, 0.018, -0.002]} />
+            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)'].geometry} material={materials['Procedural Rubber']} />
+            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_2'].geometry} material={materials.재질_1} />
+            <mesh castShadow receiveShadow geometry={nodes['Rhinoceros_Binary_STL_(_Mar_12_2024_)_3'].geometry} material={materials.재질_1} />
         </group>
     )
 }
 
 function Slippers(props) {
-    const { nodes, materials } = useGLTF('/models/slippers.glb')
+    const { nodes } = useGLTF('/models/slippers.glb')
+    const { materials } = useGLTF('/models/sandals.glb')
+    const { activeColor } = useStateStore();
+    applyProps(materials['Procedural Rubber'], { color: activeColor })
     return (
         <group {...props} dispose={null} >
-            <mesh castShadow receiveShadow geometry={nodes.TrimSrf_1069.geometry} material={materials['재질_1.001']} position={[-0.033, 0.143, 0.253]} scale={0.001} />
+            <mesh castShadow receiveShadow geometry={nodes.TrimSrf_1069.geometry} material={materials['Procedural Rubber']} position={[-0.033, 0.143, 0.253]} scale={0.001} />
         </group>
     )
 }
 
 function Clogs(props) {
-    const { nodes, materials } = useGLTF('/models/clog.glb')
+    const { nodes } = useGLTF('/models/clog.glb')
+    const { materials } = useGLTF('/models/sandals.glb')
+    const { activeColor } = useStateStore();
+    applyProps(materials['Procedural Rubber'], { color: activeColor })
     return (
         <group {...props} dispose={null}>
             <group position={[0.51, -0.195, -0.021]} scale={0.001}>
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��'].geometry} material={materials['재질_1.002']} position={[-553.931, 215.455, 57.552]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_10'].geometry} material={materials['재질_1.002']} position={[-505.897, 189.699, 100.8]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_11'].geometry} material={materials['재질_1.002']} position={[-508.633, 217.022, 10.933]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_2'].geometry} material={materials['재질_1.002']} position={[-468.531, 213.177, 57.971]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_3'].geometry} material={materials['재질_1.002']} position={[-468.453, 213.404, 59.558]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_4'].geometry} material={materials['재질_1.002']} position={[-468.486, 213.587, 58.868]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_5'].geometry} material={materials['재질_1.002']} position={[-468.721, 214.881, 56.701]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_6'].geometry} material={materials['재질_1.002']} position={[-467.654, 211.072, 41.304]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_7'].geometry} material={materials['재질_1.002']} position={[-467.738, 213.7, 41.262]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_8'].geometry} material={materials['재질_1.002']} position={[-468.01, 222.304, 41.088]} />
-                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_9'].geometry} material={materials['재질_1.002']} position={[-468.24, 212.7, 62.247]} />
+                <mesh castShadow receiveShadow geometry={nodes['COLOR=�,MATERIAL=��_11'].geometry} material={materials['Procedural Rubber']} position={[-508.633, 217.022, 10.933]} />
             </group>
         </group>
     )
