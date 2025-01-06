@@ -1,5 +1,6 @@
 "use client";
-import { Environment, OrbitControls, useGLTF, useTexture } from '@react-three/drei';
+import Overlay from '@/components/Overlay';
+import { Environment, Loader, OrbitControls, useGLTF, useTexture } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useControls } from 'leva';
 import { useEffect, useRef } from 'react';
@@ -12,6 +13,12 @@ const Page = () => {
     return (
         <div className="w-screen h-screen overflow-hidden bg-[#181818]">
             <Experience />
+            <div className='absolute top-10 left-10 text-lg text-white'>
+                <div className='text-4xl'>Dust Effect</div>
+                <div className='text-lg font-normal'>version 0.0.1</div>
+                <div className='text-sm font-extralight italic w-[15rem]'>The sliders controls the intensity of roughness and metallness. We can set different rust textures from the input on the right.</div>
+            </div>
+            <Overlay />
         </div>
     )
 }
@@ -62,5 +69,7 @@ const ModelB = () => {
     )
 }
 
+useTexture.preload("/textures/rust.jpg")
+useTexture.preload("/textures/rust-2.jpg")
 
 export default Page;
